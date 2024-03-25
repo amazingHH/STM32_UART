@@ -1,5 +1,4 @@
-stm32f4xx-nucleo/stm32f4xx_hal_rcc_ex.o: \
-  ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c \
+stm32f4xx-nucleo/common.o: ..\Src\common.c ..\Inc\common.h ..\Inc\main.h \
   ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h \
   ..\Inc\stm32f4xx_hal_conf.h \
   ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h \
@@ -32,4 +31,8 @@ stm32f4xx-nucleo/stm32f4xx_hal_rcc_ex.o: \
   ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h \
   ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h \
   ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
-  ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h
+  ..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
+  ..\..\..\..\..\..\Drivers\BSP\STM32F4xx-Nucleo\stm32f4xx_nucleo.h \
+  D:\work\Keil\Core\ARM\ARMCLANG\include\stdio.h \
+  D:\work\Keil\Core\ARM\ARMCLANG\include\stdarg.h \
+  D:\work\Keil\Core\ARM\ARMCLANG\include\string.h

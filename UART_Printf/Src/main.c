@@ -33,7 +33,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* UART handler declaration */
-UART_HandleTypeDef UartHandle;
+// UART_HandleTypeDef UartHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 #ifdef __GNUC__
@@ -54,24 +54,6 @@ static void Error_Handler(void);
   * @retval None
   */
 
-void vprint(const char *fmt, va_list argp)
-{
-    char string[200];
-    if(0 < vsprintf(string,fmt,argp)) // build string
-    {
-        HAL_UART_Transmit(&UartHandle, (uint8_t*)string, strlen(string), 0xffffff); // send message via UART
-    }
-}
-
-void my_printf(const char *fmt, ...) // custom printf() function
-{
-    va_list argp;
-    va_start(argp, fmt);
-    vprint(fmt, argp);
-    va_end(argp);
-}
-
-
 	
 int main(void)
 {
@@ -81,11 +63,12 @@ int main(void)
        - Set NVIC Group Priority to 4
        - Global MSP (MCU Support Package) initialization
      */
+  int ret = 0;
   HAL_Init();
   
   /* Configure the system clock to 84 MHz */
   SystemClock_Config();
-  BSP_LED_Init(LED2);
+  //BSP_LED_Init(LED2);
    
   /*##-1- Configure the UART peripheral ######################################*/
   /* Put the USART peripheral in the Asynchronous mode (UART Mode) */
@@ -95,34 +78,48 @@ int main(void)
       - Parity = ODD parity
       - BaudRate = 9600 baud
       - Hardware flow control disabled (RTS and CTS signals) */
-  UartHandle.Instance          = USARTx;
-  
-  UartHandle.Init.BaudRate     = 9600;
-  UartHandle.Init.WordLength   = UART_WORDLENGTH_8B;
-  UartHandle.Init.StopBits     = UART_STOPBITS_1;
-  UartHandle.Init.Parity       = UART_PARITY_ODD;
-  UartHandle.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
-  UartHandle.Init.Mode         = UART_MODE_TX_RX;
-  UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
-    
-  if(HAL_UART_Init(&UartHandle) != HAL_OK)
+  if (User_UART_Init() != HAL_OK)
   {
-    /* Initialization Error */
-    Error_Handler(); 
+      my_printf("\n\r My UART init failure !!! \n\r");
+      Error_Handler();
   }
+  User_Button_Init();
   
   /* Output a message on Hyperterminal using printf function */
   my_printf("\n\r UART Printf Example: retarget the C library printf function to the UART\n\r");
-	fflush(stdout);
+  fflush(stdout);
 
   /* Infinite loop */ 
+  
+
+	/* Wait for User Button press before starting the Communication */
+
+  User_PWM_Init();
+  User_PWM_Enable();
+  ret = User_SPI1_Init();
+  //SPI1_Test_Application();
+  HAL_Delay(1000);
   while (1)
   {
-	  my_printf("\n  test \n");
+      SPI1_Test_Application();
+	  HAL_Delay(500);
+    //Job_Polling_Entry();
+    /*while (User_Button_Status() != PRESSED)
+	{
+	  my_printf("\r\n  test button has not been pressed \r\n");
 	  BSP_LED_On(LED2);
 	  HAL_Delay(1000);
 	  BSP_LED_Off(LED2);
 	  HAL_Delay(1000);
+    }
+	while (User_Button_Status() != NOT_PRESSED)
+	{
+	  my_printf("\r\n  test button pressed \r\n");
+	  BSP_LED_On(LED2);
+	  HAL_Delay(100);
+	  BSP_LED_Off(LED2);
+	  HAL_Delay(100);
+    }*/
   }
 }
 
@@ -197,7 +194,8 @@ static void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;  
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;  
+  //RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1; 
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1; 
   if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
